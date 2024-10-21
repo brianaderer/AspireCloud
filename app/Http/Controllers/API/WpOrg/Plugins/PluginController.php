@@ -13,11 +13,11 @@ class PluginController extends Controller
 {
     /** @var array<string, string> $actions */
     private array $actions = [
-        'query_themes' => 'doQueryThemes',
+        'query_plugins' => 'doQueryPlugins',
     ];
 
     /**
-     * Handle API action and route the request to the appropriate method.
+     * Handle 'info' API action and route the request to the appropriate method.
      *
      * @return JsonResponse|Response
      */
@@ -38,20 +38,36 @@ class PluginController extends Controller
     }
 
     /**
-     * Perform theme query based on the request data.
+     * Perform plugin info query based on the request data.
      *
      * @param array<string, string> $requestData
      * @return ApiResultsResponse
      */
-    private function doQueryThemes(Request $request, array $requestData): ApiResultsResponse
+    private function doQueryPlugins(Request $request, array $requestData): ApiResultsResponse
     {
         $page = intval($request->input('page', 1));
 
         $perPage = intval($requestData['per_page']);
         $skip = ($page - 1) * $perPage;
-        $themes = DB::table('themes')->skip($skip)->take($perPage)->get()->toArray();
-        $total = DB::table('themes')->count();
-        return new ApiResultsResponse('themes', $themes, $page, $perPage, $total);
+        $plugins = DB::table('plugins')->skip($skip)->take($perPage)->get()->toArray();
+        $total = DB::table('plugins')->count();
+        return new ApiResultsResponse('plugins', $plugins, $page, $perPage, $total);
+    }
+    /**
+     * Perform plugin update query based on the request data.
+     *
+     * @param array<string, string> $requestData
+     * @return ApiResultsResponse
+     */
+    private function doCheckPluginsUpdates(Request $request, array $requestData): ApiResultsResponse
+    {
+        $page = intval($request->input('page', 1));
+
+        $perPage = intval($requestData['per_page']);
+        $skip = ($page - 1) * $perPage;
+        $plugins = DB::table('plugins')->skip($skip)->take($perPage)->get()->toArray();
+        $total = DB::table('plugins')->count();
+        return new ApiResultsResponse('plugins', $plugins, $page, $perPage, $total);
     }
 
     /**
